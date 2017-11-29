@@ -686,6 +686,8 @@ static int smb2_init_usb_psy(struct smb2 *chip)
 static enum power_supply_property smb2_usb_port_props[] = {
 	POWER_SUPPLY_PROP_TYPE,
 	POWER_SUPPLY_PROP_ONLINE,
+	POWER_SUPPLY_PROP_VOLTAGE_MAX,
+	POWER_SUPPLY_PROP_CURRENT_MAX,
 };
 
 static int smb2_usb_port_get_prop(struct power_supply *psy,
@@ -711,6 +713,12 @@ static int smb2_usb_port_get_prop(struct power_supply *psy,
 			val->intval = 1;
 		else
 			val->intval = 0;
+		break;
+	case POWER_SUPPLY_PROP_VOLTAGE_MAX:
+		val->intval = 5000000;
+		break;
+	case POWER_SUPPLY_PROP_CURRENT_MAX:
+		rc = smblib_get_prop_input_current_settled(chg, val);
 		break;
 	default:
 		pr_err_ratelimited("Get prop %d is not supported in pc_port\n",
